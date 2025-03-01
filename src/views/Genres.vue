@@ -93,6 +93,24 @@ const createNewGenre = async () => {
     console.error('Error creating the genre:', error);
   }
 };
+
+// Function to delete a genre
+const deleteGenre = async (genreId) => {
+  try {
+    const response = await fetch(`http://localhost:5252/api/genres/${genreId}`, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      // Remove the deleted genre from the table
+      genres.value = genres.value.filter((genre) => genre.genreid !== genreId);
+    } else {
+      console.error('Failed to delete the genre');
+    }
+  } catch (error) {
+    console.error('Error deleting the genre:', error);
+  }
+};
 </script>
 
 <template>
@@ -116,6 +134,7 @@ const createNewGenre = async () => {
           <td>{{ genre.genredescr }}</td>
           <td>
             <button @click="openEditPopup(genre)">Edit</button>
+            <button @click="deleteGenre(genre.genreid)">Delete</button>
           </td>
         </tr>
       </tbody>

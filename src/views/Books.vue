@@ -102,6 +102,24 @@ const createNewBook = async () => {
     console.error('Error creating the book:', error);
   }
 };
+
+// Function to delete a book
+const deleteBook = async (bookId) => {
+  try {
+    const response = await fetch(`http://localhost:5252/api/books/${bookId}`, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      // Remove the deleted book from the table
+      books.value = books.value.filter((book) => book.bookid !== bookId);
+    } else {
+      console.error('Failed to delete the book');
+    }
+  } catch (error) {
+    console.error('Error deleting the book:', error);
+  }
+};
 </script>
 
 <template>
@@ -128,11 +146,12 @@ const createNewBook = async () => {
           <td>{{ book.title }}</td>
           <td>{{ book.authorid }}</td>
           <td>{{ book.publishyear }}</td>
-          <td>{{ book.ISBN }}</td>
+          <td>{{ book.isbn }}</td>
           <td>{{ book.genreid }}</td>
           <td>{{ book.amount }}</td>
           <td>
             <button @click="openEditPopup(book)">Edit</button>
+            <button @click="deleteBook(book.bookid)">Delete</button>
           </td>
         </tr>
       </tbody>
@@ -152,7 +171,7 @@ const createNewBook = async () => {
           <input v-model="selectedBook.publishyear" id="publishyear" type="number" required />
 
           <label for="ISBN">ISBN:</label>
-          <input v-model="selectedBook.ISBN" id="ISBN" type="number" required />
+          <input v-model="selectedBook.isbn" id="ISBN" type="number" required />
 
           <label for="genreid">Genre ID:</label>
           <input v-model="selectedBook.genreid" id="genreid" type="number" required />

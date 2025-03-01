@@ -1,19 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
-// Reactive variable to store the authors data
 const authors = ref([]);
-
-// Reactive variable to store the selected author for editing
 const selectedAuthor = ref(null);
-
-// Reactive variable to control the visibility of the edit popup
 const showEditPopup = ref(false);
-
-// Reactive variable to control the visibility of the create popup
 const showCreatePopup = ref(false);
-
-// Reactive variable to store the new author data
 const newAuthor = ref({
   authorname: '',
   author2ndname: '',
@@ -95,6 +86,24 @@ const createNewAuthor = async () => {
     console.error('Error creating the author:', error);
   }
 };
+
+// Function to delete an author
+const deleteAuthor = async (authorId) => {
+  try {
+    const response = await fetch(`http://localhost:5252/api/authors/${authorId}`, {
+      method: 'DELETE',
+    });
+
+    if (response.ok) {
+      // Remove the deleted author from the table
+      authors.value = authors.value.filter((author) => author.authorid !== authorId);
+    } else {
+      console.error('Failed to delete the author');
+    }
+  } catch (error) {
+    console.error('Error deleting the author:', error);
+  }
+};
 </script>
 
 <template>
@@ -120,6 +129,7 @@ const createNewAuthor = async () => {
           <td>{{ author.dob }}</td>
           <td>
             <button @click="openEditPopup(author)">Edit</button>
+            <button @click="deleteAuthor(author.authorid)">Delete</button>
           </td>
         </tr>
       </tbody>
